@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>juheonoo</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="ambient"></div>
+
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <div>
+        <p>juheonoo</p>
+        <h2>과목</h2>
+      </div>
+      <button class="icon-btn" id="closeDrawer">×</button>
+    </div>
+    <div id="subjectDrawerList" class="playlist-list"></div>
+    <button class="new-playlist" id="newSubjectBtn">＋ 새로운 과목</button>
+
+    <div class="drawer-section-title">교재</div>
+    <div id="bookDrawerList" class="playlist-list"></div>
+    <button class="new-playlist" id="newBookBtn">＋ 새로운 교재</button>
+  </aside>
+  <div class="drawer-dim" id="drawerDim"></div>
+
+  <div class="push-area" id="pushArea">
+  <div class="app">
+    <header class="nav">
+      <button class="drawer-btn" id="openDrawer" aria-label="과목 서랍 열기">
+        <span></span><span></span><span></span>
+      </button>
+      <button class="nav-tab active" data-screen="home">홈</button>
+      <button class="nav-tab" data-screen="calendar">캘린더</button>
+      <button class="nav-tab" data-screen="stats">통계</button>
+      <button class="nav-tab" data-screen="life">생활패턴</button>
+      <button class="nav-tab" data-screen="settings">설정</button>
+    </header>
+
+    <main class="screen active" id="home">
+      <section class="hero-card">
+        <div class="cover" id="coverPreview"></div>
+        <div class="hero-text">
+          <p class="kicker">STUDY PLAYLIST</p>
+          <h1>juheonoo</h1>
+          <p class="desc">진도 입력 → 복습 자동 생성 → 오늘 할 일만 플레이</p>
+          <div id="quoteBox" class="quote-box hidden"></div>
+          <div class="hero-actions">
+            <button class="circle-btn icon-only" id="coverBtn" title="사진 변경" aria-label="사진 변경">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="3"></rect><circle cx="9" cy="10" r="1.7"></circle><path d="M7 17l4.2-4.2 3 3 1.6-1.6L19 17"></path></svg>
+            </button>
+            <button class="main-btn" id="homeAddStudy">＋ 진도 추가</button>
+            <button class="circle-btn" id="homeBulkStudy" title="일괄 진도 추가">＋＋</button>
+            <button class="circle-btn icon-only" id="scoreBtn" title="최근 시험 성적" aria-label="최근 시험 성적">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="1.2"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>
+            </button>
+            <input type="file" id="coverInput" accept="image/*" hidden>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass">
+        <div class="section-head">
+          <h2>D-Day</h2>
+          <button class="tiny" id="addDdayBtn">＋</button>
+        </div>
+        <div id="ddayList"></div>
+      </section>
+
+      <section class="glass" id="studyAvailableCard">
+        <div class="section-head">
+          <h2>오늘 공부 가능 시간</h2>
+          <span class="pill" id="availableStudyTime">0시간</span>
+        </div>
+        <div id="lifeAdvice" class="row-sub">생활패턴을 설정하면 자동 계산돼.</div>
+      </section>
+
+      <section class="glass">
+        <div class="section-head">
+          <h2>오늘 해야 할 복습</h2>
+          <span class="pill" id="todayCount">0</span>
+        </div>
+        <div id="todayReviewList"></div>
+      </section>
+
+      <section class="glass">
+        <div class="section-head">
+          <h2>오늘 수업</h2>
+          <button class="tiny" id="homeAddClass">＋</button>
+        </div>
+        <div id="todayClassList"></div>
+      </section>
+
+      <section class="glass compact-card">
+        <div class="section-head">
+          <h2>오늘 일정</h2>
+          <button class="tiny icon-label" id="homeAddEvent"><span class="mini-cal"></span> 추가</button>
+        </div>
+        <div id="todayEventList"></div>
+      </section>
+
+      <section class="glass">
+        <div class="section-head">
+          <h2>밀린 복습</h2>
+          <span class="pill danger" id="overdueCount">0</span>
+        </div>
+        <div id="overdueList"></div>
+      </section>
+    </main>
+
+    <main class="screen" id="calendar">
+      <section class="calendar-card">
+        <div class="calendar-top">
+          <button class="circle-btn" id="prevMonth">‹</button>
+          <div class="center-title">
+            <select id="calendarSubject"></select>
+            <h1 id="monthTitle"></h1>
+          </div>
+          <button class="circle-btn" id="nextMonth">›</button>
+        </div>
+        <div id="weekRow" class="week-row"></div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+      </section>
+
+      <section class="glass">
+        <div class="section-head">
+          <h2 id="selectedDateTitle"></h2>
+          <div class="head-actions">
+            <button class="tiny icon-label" id="addEventBtn"><span class="mini-cal"></span> 일정</button>
+            <button class="tiny" id="addClassBtn">＋ 수업</button>
+            <button class="tiny" id="bulkStudyBtn">＋ 일괄 진도</button><button class="tiny" id="printA4Btn">A4 출력</button>
+            <button class="tiny" id="addStudyBtn">＋ 진도</button>
+          </div>
+        </div>
+        <div id="selectedItems"></div>
+      </section>
+    </main>
+
+    <main class="screen subject-page" id="subjectPage">
+      <section class="hero-card subject-hero">
+        <div class="cover subject-cover" id="subjectCoverPreview"></div>
+        <div class="hero-text">
+          <p class="kicker">SUBJECT PLAYLIST</p>
+          <h1 id="subjectPageTitle">과목</h1>
+          <p class="desc" id="subjectPageSub">0개 진도 · 0개 수업</p>
+          <div class="hero-actions">
+            <button class="circle-btn icon-only" id="subjectCoverBtn" title="과목 사진 변경" aria-label="과목 사진 변경">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="3"></rect><circle cx="9" cy="10" r="1.7"></circle><path d="M7 17l4.2-4.2 3 3 1.6-1.6L19 17"></path></svg>
+            </button>
+            <button class="main-btn" id="subjectAddStudy">＋ 진도 추가</button>
+            <button class="circle-btn" id="subjectAddClass" title="수업 추가">＋</button>
+            <input type="file" id="subjectCoverInput" accept="image/*" hidden>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass">
+        <div class="section-head">
+          <h2>과목 메모</h2>
+          <button class="tiny" id="subjectSaveNote">메모 추가</button>
+        </div>
+        <textarea id="subjectNoteInput" class="memo-area" placeholder="이 과목에서 기억할 것"></textarea>
+        <div id="subjectNoteList" class="note-list"></div>
+      </section>
+
+      <section class="glass">
+        <div class="section-head">
+          <h2>교재 목록</h2>
+          <span class="soft">교재를 누르면 문제 기록으로 들어감</span>
+        </div>
+        <div id="subjectBookList" class="playlist-list subject-book-list"></div>
+      </section>
+
+      <section class="glass">
+        <div class="section-head">
+          <h2>과목 진도 기록</h2>
+          <span class="soft">캘린더 진도와 연결</span>
+        </div>
+        <div class="subject-inner-tabs" id="subjectInnerTabs">
+          <button class="subject-tab active" data-subject-tab="schedule">일정</button>
+          <button class="subject-tab" data-subject-tab="books">교재</button>
+        </div>
+        <div id="subjectSchedulePanel">
+          <div id="subjectTimeline"></div>
+        </div>
+        <div id="subjectBooksPanel" class="hidden">
+          <div class="section-head">
+            <h2>교재</h2>
+            <button class="tiny" id="addSubjectBookBtn">＋ 교재</button>
+          </div>
+          <div id="subjectBookListExtra1"></div>
+        </div>
+      </section>
+    </main>
+
+    <main class="screen book-page" id="bookPage">
+      <section class="hero-card subject-hero">
+        <div class="cover subject-cover" id="bookCoverPreview"></div>
+        <div class="hero-text">
+          <p class="kicker">BOOK PLAYLIST</p>
+          <h1 id="bookPageTitle">교재</h1>
+          <p class="desc" id="bookPageSub">0개 기록</p>
+          <div class="hero-actions">
+            <button class="circle-btn" id="bookBackSubject">‹</button>
+            <button class="circle-btn icon-only" id="bookCoverBtn" title="교재 사진 변경" aria-label="교재 사진 변경">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="3"></rect><circle cx="9" cy="10" r="1.7"></circle><path d="M7 17l4.2-4.2 3 3 1.6-1.6L19 17"></path></svg>
+            </button>
+            <input type="file" id="bookCoverInput" accept="image/*" hidden>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass">
+        <div class="section-head">
+          <h2>문제 기록 추가</h2>
+          <button class="tiny" id="bookSaveRecord">저장</button>
+        </div>
+        <div class="record-form">
+          <input id="bookRecordDate" type="date">
+          <input id="bookRecordRange" placeholder="범위 예: 1~30번 / p.12~18">
+          <textarea id="bookRecordMemo" class="memo-area" placeholder="메모 예: 오답 많음, 내일 다시"></textarea>
+        </div>
+      </section>
+
+      <section class="glass">
+        <div class="section-head">
+          <h2>기록 리스트</h2>
+          <span class="soft">최신순</span>
+        </div>
+        <div id="bookRecordList"></div>
+      </section>
+    </main>
+
+    <main class="screen" id="stats">
+      <section class="glass">
+        <div class="section-head">
+          <h2>복습 현황</h2>
+          <span class="soft">완료율</span>
+        </div>
+        <div id="reviewStats"></div>
+      </section>
+      <section class="glass">
+        <div class="section-head">
+          <h2>진도 현황</h2>
+          <span class="soft">목표 대비</span>
+        </div>
+        <div id="progressStats"></div>
+      </section>
+      <section class="glass">
+        <div class="section-head">
+          <h2>수업 현황</h2>
+          <span class="soft">이번 달</span>
+        </div>
+        <div id="classStats"></div>
+      </section>
+      <section class="glass">
+        <div class="section-head">
+          <h2>D-Day 진행률</h2>
+          <span class="soft">남은 시간</span>
+        </div>
+        <div id="ddayStats"></div>
+      </section>
+      <section class="glass">
+        <div class="section-head">
+          <h2>최근 7일</h2>
+          <span class="soft">요약</span>
+        </div>
+        <div id="weekStats" class="week-stat"></div>
+      </section>
+    </main>
+
+    <main class="screen" id="life">
+      <section class="glass">
+        <div class="section-head">
+          <h2>생활패턴</h2>
+          <button class="tiny" id="addLifeBlockBtn">＋ 블록</button>
+        </div>
+        <p class="soft">학교, 수면, 이동처럼 고정 시간을 넣으면 오늘 공부 가능 시간이 계산돼.</p>
+        <div id="lifeSummary" class="life-summary"></div>
+      </section>
+
+      <section class="calendar-card">
+        <div class="section-head">
+          <h2>주간 시간표</h2>
+          <span class="soft">직사각형 시간표</span>
+        </div>
+        <div id="lifeTable" class="life-table"></div>
+      </section>
+
+      <section class="glass hidden" id="lifeBlockListSection">
+        <div class="section-head">
+          <h2>시간 블록 목록</h2>
+          <span class="soft">A방식 · 시작~끝 입력</span>
+        </div>
+        <div id="lifeBlockList"></div>
+      </section>
+    </main>
+
+    <main class="screen" id="settings">
+      <section class="glass settings-card">
+        <h2 class="settings-title">설정</h2>
+        <button class="setting-row" id="cycleSetting"><span>복습 주기</span><strong id="cycleText"></strong></button>
+        <button class="setting-row" id="ddaySetting"><span>D-Day 관리</span><strong id="ddayText"></strong></button>
+        <button class="setting-row" id="scoreSetting"><span>최근 성적</span><strong id="scoreText"></strong></button>
+        <button class="setting-row" id="quoteSetting"><span>오늘의 문구</span><strong id="quoteText"></strong></button>
+        <button class="setting-row" id="themeSetting"><span>테마</span><strong id="themeText"></strong></button>
+        <button class="setting-row" id="fontSetting"><span>폰트</span><strong id="fontText"></strong></button>
+        <button class="setting-row" id="animSetting"><span>창 페이드</span><strong id="animText"></strong></button>
+        <button class="setting-row" id="weekStartSetting"><span>캘린더 시작 요일</span><strong id="weekStartText"></strong></button>
+        <button class="setting-row" id="exportBtn"><span>데이터 백업</span><strong>내보내기</strong></button>
+        <label class="setting-row"><span>데이터 복원</span><strong>가져오기</strong><input id="importInput" type="file" accept="application/json" hidden></label>
+        <button class="setting-row danger-text" id="resetBtn"><span>초기화</span><strong>전체 삭제</strong></button>
+        <div class="version">juheonoo v3.0</div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="player">
+    <button id="prevTask" title="이전">◀</button>
+    <button class="play-core" id="toggleCurrentDone">✓</button>
+    <button id="nextTask" title="다음">▶</button>
+    <div class="mini-cover"></div>
+    <div class="mini-text">
+      <strong id="playerTitle">오늘 복습 없음</strong>
+      <span id="playerSub">진도를 추가하면 자동으로 표시됨</span>
+    </div>
+    <button id="playerGo">⋯</button>
+  </footer>
+
+  </div>
+
+  <div class="modal-backdrop" id="keyProblemModal">
+    <div class="modal">
+      <button class="close" data-close="keyProblemModal">×</button>
+      <h2 id="keyProblemModalTitle">주요문제 추가</h2>
+      <input id="keyProblemId" type="hidden">
+      <input id="keyProblemBookId" type="hidden">
+      <label>문제번호 / 위치</label>
+      <input id="keyProblemTitle" placeholder="예) p.42 13번 / 240611 20번">
+      <label>난이도</label>
+      <select id="keyProblemLevel">
+        <option value="1">★</option>
+        <option value="2">★★</option>
+        <option value="3">★★★</option>
+      </select>
+      <label>메모</label>
+      <textarea id="keyProblemMemo" placeholder="풀이 포인트, 다시 봐야 하는 이유"></textarea>
+      <label>사진 첨부</label>
+      <input id="keyProblemPhotos" type="file" accept="image/*" multiple>
+      <div id="keyProblemPhotoPreview" class="problem-photo-preview"></div>
+      <button class="primary" id="saveKeyProblemBtn">저장</button>
+      <button class="secondary danger-text hidden" id="deleteKeyProblemBtn">삭제</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="subjectBookModal">
+    <div class="modal">
+      <button class="close" data-close="subjectBookModal">×</button>
+      <h2 id="subjectBookModalTitle">교재 추가</h2>
+      <input id="subjectBookId" type="hidden">
+      <label>과목</label>
+      <select id="subjectBookSubject"></select>
+      <label>교재명</label>
+      <input id="subjectBookName" placeholder="예) 개념원리, 쎈, 기출코드">
+      <label>메모</label>
+      <textarea id="subjectBookMemo" placeholder="선택"></textarea>
+      <button class="primary" id="saveSubjectBookBtn">저장</button>
+      <button class="secondary danger-text hidden" id="deleteSubjectBookBtn">삭제</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="lifeBlockModal">
+    <div class="modal">
+      <button class="close" data-close="lifeBlockModal">×</button>
+      <h2 id="lifeBlockModalTitle">시간 블록 추가</h2>
+      <input id="lifeBlockId" type="hidden">
+
+      <label>요일</label>
+      <select id="lifeDay">
+        <option value="1">월요일</option>
+        <option value="2">화요일</option>
+        <option value="3">수요일</option>
+        <option value="4">목요일</option>
+        <option value="5">금요일</option>
+        <option value="6">토요일</option>
+        <option value="0">일요일</option>
+      </select>
+
+      <label>종류</label>
+      <select id="lifeType">
+        <option value="sleep">수면</option>
+        <option value="school">학교</option>
+        <option value="academy">학원</option>
+        <option value="meal">식사</option>
+        <option value="move">이동</option>
+        <option value="study">공부</option>
+        <option value="rest">휴식</option>
+        <option value="other">기타</option>
+      </select>
+
+      <label>이름</label>
+      <input id="lifeName" placeholder="예) 학교, 수학학원, 수면">
+
+      <label>시간</label>
+      <div class="time-grid">
+        <input id="lifeStart" type="time">
+        <input id="lifeEnd" type="time">
+      </div>
+
+      <button class="primary" id="saveLifeBlockBtn">저장</button>
+      <button class="secondary danger-text hidden" id="deleteLifeBlockBtn">삭제</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="bulkStudyModal">
+    <div class="modal">
+      <button class="close" data-close="bulkStudyModal">×</button>
+      <h2>일괄 진도 추가</h2>
+
+      <label>과목</label>
+      <select id="bulkSubject"></select>
+
+      <label>강의 범위</label>
+      <div class="time-grid">
+        <input id="bulkStartNo" type="number" min="1" placeholder="시작 · 예) 10">
+        <input id="bulkEndNo" type="number" min="1" placeholder="끝 · 예) 40">
+      </div>
+
+      <label>일괄 진도 2.0 입력</label>
+      <textarea id="bulkListText" placeholder="예) 1~38강 또는 Theme1~11
+비워두면 아래 숫자 범위 사용"></textarea>
+
+      <label>강의명 형식</label>
+      <input id="bulkNameFormat" placeholder="예) {n}강" value="{n}강">
+
+      <label>시작일</label>
+      <input id="bulkStartDate" type="date">
+
+      <label>종료일</label>
+      <input id="bulkEndDate" type="date">
+
+      <label>요일</label>
+      <div class="weekday-grid">
+        <label><input type="checkbox" class="bulkWeekday" value="1" checked> 월</label>
+        <label><input type="checkbox" class="bulkWeekday" value="2" checked> 화</label>
+        <label><input type="checkbox" class="bulkWeekday" value="3"> 수</label>
+        <label><input type="checkbox" class="bulkWeekday" value="4" checked> 목</label>
+        <label><input type="checkbox" class="bulkWeekday" value="5" checked> 금</label>
+        <label><input type="checkbox" class="bulkWeekday" value="6"> 토</label>
+        <label><input type="checkbox" class="bulkWeekday" value="0" checked> 일</label>
+      </div>
+
+      <label>복습 자동 생성</label>
+      <select id="bulkReviewEnabled">
+        <option value="true">적용</option>
+        <option value="false">적용 안 함</option>
+      </select>
+
+      <label>메모</label>
+      <textarea id="bulkMemo" placeholder="선택"></textarea>
+
+      <button class="primary" id="saveBulkStudyBtn">한 번에 추가</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="studyModal">
+    <div class="modal">
+      <button class="close" data-close="studyModal">×</button>
+      <h2 id="studyModalTitle">진도 추가</h2>
+      <input id="studyId" type="hidden">
+      <label>날짜</label>
+      <input id="studyDate" type="date">
+      <label>과목</label>
+      <select id="studySubject"></select>
+      <label>교재</label>
+      <select id="studyBook"></select>
+      <label>강의명</label>
+      <input id="studyName" placeholder="예) 10강">
+      <label>목표 강의 수</label>
+      <input id="studyGoal" type="number" min="0" placeholder="선택 · 예) 32">
+      <label>복습 자동 생성</label>
+      <select id="studyReviewEnabled">
+        <option value="true">ON · 복습 생성</option>
+        <option value="false">OFF · 진도만 기록</option>
+      </select>
+      <label>메모</label>
+      <textarea id="studyMemo" placeholder="선택"></textarea>
+      <button class="primary" id="saveStudyBtn">저장</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="classModal">
+    <div class="modal">
+      <button class="close" data-close="classModal">×</button>
+      <h2 id="classModalTitle">수업 일정 추가</h2>
+      <input id="classId" type="hidden">
+      <label>날짜</label>
+      <input id="classDate" type="date">
+      <label>과목</label>
+      <select id="classSubject"></select>
+      <label>수업명</label>
+      <input id="className" placeholder="예) 수2 현강">
+      <label>시간</label>
+      <div class="time-grid">
+        <input id="classStart" type="time">
+        <input id="classEnd" type="time">
+      </div>
+      <label>반복</label>
+      <select id="classRepeat">
+        <option value="none">반복 없음</option>
+        <option value="daily">매일</option>
+        <option value="weekly">매주</option>
+        <option value="monthly">매월</option>
+      </select>
+      <label>반복 종료일</label>
+      <input id="classUntil" type="date">
+      <label>메모</label>
+      <textarea id="classMemo" placeholder="선택"></textarea>
+      <button class="primary" id="saveClassBtn">저장</button>
+      <button class="secondary danger-text hidden" id="deleteClassBtn">삭제</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="eventModal">
+    <div class="modal">
+      <button class="close" data-close="eventModal">×</button>
+      <h2 id="eventModalTitle">일정 추가</h2>
+      <input id="eventId" type="hidden">
+      <label>날짜</label>
+      <input id="eventDate" type="date">
+      <label>일정명</label>
+      <input id="eventName" placeholder="예) 상담, 모의고사, 접수 마감">
+      <label>시간</label>
+      <div class="time-grid">
+        <input id="eventStart" type="time">
+        <input id="eventEnd" type="time">
+      </div>
+      <label>반복</label>
+      <select id="eventRepeat">
+        <option value="none">반복 없음</option>
+        <option value="daily">매일</option>
+        <option value="weekly">매주</option>
+        <option value="monthly">매월</option>
+      </select>
+      <label>반복 종료일</label>
+      <input id="eventUntil" type="date">
+      <label>메모</label>
+      <textarea id="eventMemo" placeholder="선택"></textarea>
+      <button class="primary" id="saveEventBtn">저장</button>
+      <button class="secondary danger-text hidden" id="deleteEventBtn">삭제</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="ddayModal">
+    <div class="modal">
+      <button class="close" data-close="ddayModal">×</button>
+      <h2 id="ddayModalTitle">D-Day 추가</h2>
+      <input id="ddayId" type="hidden">
+      <label>이름</label>
+      <input id="ddayName" placeholder="예) 2027 수능">
+      <label>날짜</label>
+      <input id="ddayDate" type="date">
+      <label>시작 날짜</label>
+      <input id="ddayStart" type="date">
+      <button class="primary" id="saveDdayBtn">저장</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="optionModal">
+    <div class="modal">
+      <button class="close" data-close="optionModal">×</button>
+      <h2 id="optionTitle">설정</h2>
+      <div id="optionBody"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

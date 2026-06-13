@@ -1,0 +1,9 @@
+{
+  "name": "juheonoo",
+  "short_name": "juheonoo",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#626d91",
+  "theme_color": "#626d91",
+  "icons": []
+}
